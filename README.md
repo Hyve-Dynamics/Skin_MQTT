@@ -1,7 +1,7 @@
 
 # Real-Time Sensor Data Visualization and Analysis
 
-![Real-Time 10x10 through MQTT connection](Assets/10 X 10 MQTT.gif)
+![Real-Time Heatmap Demo](Assets/demo.gif)
 
 This repository contains Python scripts for managing, visualizing, and testing data from the Haptic Matrix in a 10x10 sensor arrangement. The scripts leverage MQTT for real-time data communication and include functionalities for data collection, visualization, and testing.
 
