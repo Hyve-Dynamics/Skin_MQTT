@@ -48,9 +48,9 @@ def on_message(client, userdata, msg):
         # Reshape the array into a 10x10 matrix
         sensor_matrix = np.array(values).reshape((10, 10))
         
-        # Print the reshaped matrix (optional)
-        print("Updated Sensor Matrix:")
-        print(sensor_matrix)
+        # Print the reshaped matrix (OPTIONAL)
+        #print("Updated Sensor Matrix:")
+        #print(sensor_matrix)
     except json.JSONDecodeError:
         print("Failed to decode message payload as JSON.")
     except ValueError:
@@ -97,7 +97,7 @@ client.loop_start()
 send_command('{"REQUEST":"RUN"}')
 
 # Start the animation for real-time updates
-ani = FuncAnimation(fig, update_heatmap, interval=500, blit=True)  # Update every 500 ms
+ani = FuncAnimation(fig, update_heatmap, interval=50, blit=True)  # Update every 50 ms
 
 # Keep the script running
 print("Press Ctrl+C to stop and send the STOP command...")
