@@ -49,6 +49,8 @@ This repository contains Python scripts for managing, visualizing, and testing d
      1. Install the required Python libraries: `pip install matplotlib numpy paho-mqtt`.
      2. Run the script: `python TimeTest.py`.
      3. After 1 minute, view the printed statistics and the histogram plot.
+     ![Timming Historical](Assets/One_Minute_Timing.png)
+     ![1 Minute Metrics](Assets/Metrics.png)
 
 ---
 
