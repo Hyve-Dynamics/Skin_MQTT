@@ -1,0 +1,26 @@
+# Ignore Python cache and temporary files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environments
+venv/
+env/
+.venv/
+
+# Ignore log files
+logs/
+*.log
+
+# Ignore csv and pt outputs
+*.csv
+*.pt
+
+# Ignore output directories
+output/
+generated_data/
+keys/
+
+# Ignore specific file
+debug_output.txt
+launch.json
