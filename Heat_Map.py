@@ -5,6 +5,7 @@ import time
 import json
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 # MQTT broker details
 BROKER = "broker.mqtt.cool"
@@ -12,6 +13,17 @@ PORT = 1883
 
 # Initialize MQTT client
 client = mqtt.Client()
+
+# Global variable to hold sensor data
+sensor_matrix = np.zeros((10, 10))  # 10x10 matrix initialized with zeros
+
+# Create a figure and axis for the heatmap
+fig, ax = plt.subplots()
+heatmap = ax.imshow(sensor_matrix, cmap="viridis", interpolation="nearest", aspect="auto")
+plt.colorbar(heatmap, ax=ax)
+ax.set_title("Real-Time Sensor Heatmap")
+ax.set_xlabel("Sensor Column")
+ax.set_ylabel("Sensor Row")
 
 # Callback when the client successfully connects to the broker
 def on_connect(client, userdata, flags, rc):
@@ -25,6 +37,7 @@ def on_connect(client, userdata, flags, rc):
 
 # Callback when a message is received from the broker
 def on_message(client, userdata, msg):
+    global sensor_matrix
     try:
         # Parse the payload as JSON
         data = json.loads(msg.payload.decode())
@@ -32,19 +45,25 @@ def on_message(client, userdata, msg):
         # Extract values and convert to integers
         values = [int(value) for value in data.values()]
         
-        # Ensure there are 100 values to reshape into 10x10
-        if len(values) == 100:
-            # Reshape into a 10x10 matrix
-            sensor_matrix = np.array(values).reshape(10, 10)
-            
-            # Plot the heatmap
-            plot_heatmap(sensor_matrix)
-        else:
-            print("Received data does not contain exactly 100 values.")
+        # Reshape the array into a 10x10 matrix
+        sensor_matrix = np.array(values).reshape((10, 10))
+        
+        # Print the reshaped matrix (optional)
+        print("Updated Sensor Matrix:")
+        print(sensor_matrix)
     except json.JSONDecodeError:
         print("Failed to decode message payload as JSON.")
+    except ValueError:
+        print("Error reshaping the array. Ensure there are exactly 100 elements.")
     except Exception as e:
         print(f"An error occurred: {e}")
+
+# Update function for the heatmap
+def update_heatmap(*args):
+    global sensor_matrix
+    heatmap.set_data(sensor_matrix)  # Update heatmap data
+    heatmap.set_clim(vmin=np.min(sensor_matrix), vmax=np.max(sensor_matrix))  # Adjust color scale
+    return heatmap,
 
 # Function to send a command to the sensor
 def send_command(command):
@@ -60,15 +79,6 @@ def signal_handler(sig, frame):
     client.disconnect()  # Disconnect from the broker
     print("Disconnected from broker. Exiting...")
     sys.exit(0)
-
-# Function to plot the heatmap
-def plot_heatmap(matrix):
-    plt.imshow(matrix, cmap='hot', interpolation='nearest')
-    plt.colorbar(label='Sensor Value')
-    plt.title('Sensor Heatmap')
-    plt.xlabel('X Axis (Sensor Columns)')
-    plt.ylabel('Y Axis (Sensor Rows)')
-    plt.show()
 
 # Assign callback functions
 client.on_connect = on_connect
@@ -86,10 +96,9 @@ client.loop_start()
 # Example: Send a command to start collecting data
 send_command('{"REQUEST":"RUN"}')
 
+# Start the animation for real-time updates
+ani = FuncAnimation(fig, update_heatmap, interval=500, blit=True)  # Update every 500 ms
+
 # Keep the script running
 print("Press Ctrl+C to stop and send the STOP command...")
-try:
-    while True:
-        time.sleep(1)  # Keep the script running
-except KeyboardInterrupt:
-    signal_handler(None, None)
+plt.show()
