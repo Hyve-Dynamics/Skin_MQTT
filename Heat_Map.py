@@ -19,7 +19,7 @@ sensor_matrix = np.zeros((10, 10))  # 10x10 matrix initialized with zeros
 
 # Create a figure and axis for the heatmap
 fig, ax = plt.subplots()
-heatmap = ax.imshow(sensor_matrix, cmap="viridis", interpolation="nearest", aspect="auto")
+heatmap = ax.imshow(sensor_matrix, cmap="viridis", interpolation="bicubic", aspect="auto")
 plt.colorbar(heatmap, ax=ax)
 ax.set_title("Real-Time Sensor Heatmap")
 ax.set_xlabel("Sensor Column")
