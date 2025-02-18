@@ -10,7 +10,7 @@ BROKER = "broker.mqtt.cool"
 PORT = 1883
 
 # Initialize MQTT client
-client = mqtt.Client()
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 
 # Variables to track time intervals and total packages
 time_intervals = []
@@ -19,14 +19,13 @@ total_packages = 0
 start_time = None
 
 # Callback when the client successfully connects to the broker
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
+def on_connect(client, userdata, flags, reason_code, properties):
+    if reason_code == 0:
         print("Connected successfully to the broker!")
-        # Subscribe to all topics under HYVE
         client.subscribe("HYVE/#")
         print("Subscribed to HYVE/#")
     else:
-        print(f"Failed to connect. Error code: {rc}")
+        print(f"Failed to connect. Error code: {reason_code}")
 
 # Callback when a message is received from the broker
 def on_message(client, userdata, msg):
